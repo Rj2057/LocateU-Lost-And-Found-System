@@ -3,7 +3,6 @@ import sys
 import os
 from pathlib import Path
 
-# Add the backend directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from config import DatabaseConfig
@@ -19,7 +18,6 @@ def display_table_structure():
     cursor = connection.cursor(dictionary=True)
     
     try:
-        # Get all tables in the database
         cursor.execute("SHOW TABLES")
         tables = cursor.fetchall()
         
@@ -32,7 +30,6 @@ def display_table_structure():
             print(f"\n📊 TABLE: {table_name}")
             print("-" * 60)
             
-            # Display table columns and constraints
             cursor.execute(f"DESCRIBE {table_name}")
             columns = cursor.fetchall()
             
@@ -42,7 +39,6 @@ def display_table_structure():
                 default_value = str(column['Default']) if column['Default'] is not None else 'NULL'
                 print(f"{column['Field']:<20} {column['Type']:<20} {column['Null']:<8} {column['Key']:<10} {default_value:<15} {column['Extra']:<10}")
             
-            # Display foreign key constraints
             print(f"\n🔗 FOREIGN KEY CONSTRAINTS for {table_name}:")
             cursor.execute(f"""
                 SELECT 
@@ -96,20 +92,17 @@ def display_sample_data():
             rows = cursor.fetchall()
             
             if rows:
-                # Print column headers
                 columns = rows[0].keys()
                 header = " | ".join(str(col) for col in columns)
                 print(header)
                 print("-" * len(header))
                 
-                # Print data rows
                 for row in rows:
                     values = [str(row[col])[:30] + "..." if len(str(row[col])) > 30 else str(row[col]) for col in columns]
                     print(" | ".join(values))
             else:
                 print("No data found")
             
-            # Show total count
             cursor.execute(f"SELECT COUNT(*) as total FROM {table_name}")
             total = cursor.fetchone()['total']
             print(f"Total rows: {total}")

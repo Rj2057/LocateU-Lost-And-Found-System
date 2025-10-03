@@ -42,20 +42,17 @@ class DatabaseConfig:
             connection = DatabaseConfig.get_connection()
             if connection:
                 cursor = connection.cursor()
-                
-                # Get database name
+
                 cursor.execute("SELECT DATABASE()")
                 db_name = cursor.fetchone()
                 print(f"🎯 Current database: {db_name[0]}")
-                
-                # Show tables
+
                 cursor.execute("SHOW TABLES")
                 tables = cursor.fetchall()
                 print("📋 Tables in database:")
                 for table in tables:
                     print(f"   - {table[0]}")
-                
-                # Get table counts
+
                 for table in tables:
                     table_name = table[0]
                     cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
@@ -74,10 +71,9 @@ class DatabaseConfig:
     def get_config():
         """Return database configuration (without password) for debugging"""
         config = DatabaseConfig.DB_CONFIG.copy()
-        config['password'] = '***HIDDEN***'  # Hide password in logs
+        config['password'] = '***HIDDEN***'
         return config
 
-# Test the connection when running this file directly
 if __name__ == "__main__":
     print("🔧 Testing database connection...")
     print(f"📝 Configuration: {DatabaseConfig.get_config()}")
