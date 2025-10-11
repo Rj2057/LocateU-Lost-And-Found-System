@@ -1,0 +1,120 @@
+<!-- ====================================
+FILE: frontend/templates/staff_claims.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Claims - LocateU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">🔍 LocateU - Staff Portal</div>
+        <div class="nav-user">
+            <span>Welcome, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Staff Menu</h3>
+            <ul class="menu-list">
+                <li><a href="{{ url_for('staff_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('staff_claims') }}" class="active">📋 Review Claims</a></li>
+                <li><a href="{{ url_for('staff_match') }}">🔗 Match Items</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>📋 Review Claims</h1>
+                <p>Verify and approve/reject claim requests</p>
+            </div>
+
+            <div class="claims-container">
+                {% if claims %}
+                    {% for claim in claims %}
+                    <div class="claim-card">
+                        <div class="claim-header">
+                            <h3>Claim #{{ claim.claim_id }}</h3>
+                            <span class="status-badge status-{{ claim.approval_status.lower() }}">
+                                {{ claim.approval_status }}
+                            </span>
+                        </div>
+
+                        <div class="claim-body">
+                            <div class="claim-section">
+                                <h4>👤 Student Information</h4>
+                                <p><strong>Name:</strong> {{ claim.student_name }}</p>
+                                <p><strong>Email:</strong> {{ claim.student_email }}</p>
+                            </div>
+
+                            <div class="claim-section">
+                                <h4>🔴 Lost Item Details</h4>
+                                <p><strong>Item:</strong> {{ claim.lost_item_name }}</p>
+                                <p><strong>Category:</strong> {{ claim.lost_category }}</p>
+                            </div>
+
+                            <div class="claim-section">
+                                <h4>🟢 Found Item Details</h4>
+                                <p><strong>Item:</strong> {{ claim.found_item_name }}</p>
+                                <p><strong>Location:</strong> {{ claim.found_loc }}</p>
+                            </div>
+
+                            <div class="claim-section">
+                                <h4>📝 Proof of Ownership</h4>
+                                <p>{{ claim.proof_text }}</p>
+                                <div class="proof-image">
+                                    {% if claim.has_proof %}
+                                        <img src="{{ url_for('get_claim_proof', claim_id=claim.claim_id) }}" 
+                                             alt="Proof of ownership" 
+                                             onclick="openImageModal(this.src)">
+                                    {% else %}
+                                        <div class="no-image">No proof uploaded</div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <div class="claim-section">
+                                <h4>📅 Dates</h4>
+                                <p><strong>Match Date:</strong> {{ claim.match_date or '—' }}</p>
+
+                            </div>
+
+                        </div>
+
+                        {% if claim.approval_status == 'Pending' %}
+                        <div class="claim-actions">
+                            <button class="btn btn-success" onclick="verifyClaim({{ claim.claim_id }}, 'approve')">
+                                ✅ Approve
+                            </button>
+                            <button class="btn btn-danger" onclick="verifyClaim({{ claim.claim_id }}, 'reject')">
+                                ❌ Reject
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state-large">
+                        <h3>No claims to review</h3>
+                        <p>All claims have been processed</p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="modal">
+        <span class="close" onclick="closeImageModal()">&times;</span>
+        <img class="modal-image" id="modal-img">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

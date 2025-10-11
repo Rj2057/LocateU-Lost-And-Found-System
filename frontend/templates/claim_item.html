@@ -1,0 +1,114 @@
+<!-- ====================================
+FILE: frontend/templates/claim_item.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Item - LocateU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">🔍 LocateU</div>
+        <div class="nav-user">
+            <span>Welcome, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Menu</h3>
+            <ul class="menu-list">
+                <li><a href="{{ url_for('student_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('report_lost') }}">🔴 Report Lost Item</a></li>
+                <li><a href="{{ url_for('report_found') }}">🟢 Report Found Item</a></li>
+                <li><a href="{{ url_for('claim_item') }}" class="active">✋ Claim Item</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>✋ Claim an Item</h1>
+                <p>Browse found items and claim yours</p>
+            </div>
+
+            <div class="items-grid">
+                {% if found_items %}
+                    {% for item in found_items %}
+                    <div class="item-card-large">
+                        <div class="item-image">
+                            {% if item.photo %}
+                            <img src="{{ url_for('get_found_image', item_id=item.f_i_id) }}" alt="{{ item.item_name }}">
+                            {% else %}
+                            <div class="no-image-large">📦</div>
+                            {% endif %}
+                        </div>
+                        <div class="item-info">
+                            <h3>{{ item.item_name }}</h3>
+                            <div class="item-meta">
+                                <p><strong>Category:</strong> {{ item.category }}</p>
+                                <p><strong>Found Date:</strong> {{ item.found_date }}</p>
+                                <p><strong>Location:</strong> {{ item.found_loc }}</p>
+                                <p><strong>Reported by:</strong> {{ item.reporter_name }}</p>
+                            </div>
+                            <div class="item-description">
+                                <p>{{ item.description }}</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openClaimModal({{ item.f_i_id }}, '{{ item.item_name }}')">
+                                Claim This Item
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state-large">
+                        <h3>No unclaimed items at the moment</h3>
+                        <p>Check back later or report a lost item</p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Claim Modal -->
+    <div id="claim-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeClaimModal()">&times;</span>
+            <h2>Submit Claim</h2>
+            <p id="claim-item-name"></p>
+            
+            <form id="claim-form" onsubmit="handleClaim(event)" enctype="multipart/form-data">
+                <input type="hidden" name="found_id" id="claim-found-id">
+                
+                <div class="form-group">
+                    <label>Proof of Ownership (Text) *</label>
+                    <textarea name="proof_text" required rows="4" placeholder="Describe how you can prove this is your item (serial number, unique features, purchase details, etc.)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Proof Photo *</label>
+                    <div class="file-upload">
+                        <input type="file" name="proof_file" id="proof-upload" accept="image/*" required onchange="previewProofImage(event)">
+                        <label for="proof-upload" class="file-upload-label">
+                            <span>📷 Choose Photo</span>
+                        </label>
+                        <div id="proof-preview" class="image-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Claim</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeClaimModal()">Cancel</button>
+                </div>
+
+                <div id="claim-message" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

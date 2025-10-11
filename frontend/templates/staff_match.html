@@ -1,0 +1,141 @@
+<!-- ====================================
+FILE: frontend/templates/staff_match.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Items - LocateU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">🔍 LocateU - Staff Portal</div>
+        <div class="nav-user">
+            <span>Welcome, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Staff Menu</h3>
+            <ul class="menu-list">
+                <li><a href="{{ url_for('staff_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('staff_claims') }}">📋 Review Claims</a></li>
+                <li><a href="{{ url_for('staff_match') }}" class="active">🔗 Match Items</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>🔗 Match Lost & Found Items</h1>
+                <p>Connect lost items with found items</p>
+            </div>
+
+            <div class="match-container">
+                <div class="match-column">
+                    <h2>🔴 Lost Items (Unresolved)</h2>
+                    <div class="items-list-match">
+                        {% if lost_items %}
+                            {% for item in lost_items %}
+                            <div class="match-item-card" data-id="{{ item.lost_item_id }}" data-type="lost">
+                                {% if item.photo %}
+                                <img src="{{ url_for('get_lost_image', item_id=item.lost_item_id) }}" alt="{{ item.item_name }}">
+                                {% else %}
+                                <div class="no-image-small">📦</div>
+                                {% endif %}
+                                <div class="match-item-info">
+                                    <h4>{{ item.item_name }}</h4>
+                                    <p><strong>Category:</strong> {{ item.category }}</p>
+                                    <p><strong>Date:</strong> {{ item.lost_date }}</p>
+                                    <p><strong>Location:</strong> {{ item.lost_loc }}</p>
+                                    <p><strong>Student:</strong> {{ item.student_name }}</p>
+                                    <p class="description">{{ item.description[:100] }}...</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-state">No unresolved lost items</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="match-column">
+                    <h2>🟢 Found Items (Unclaimed)</h2>
+                    <div class="items-list-match">
+                        {% if found_items %}
+                            {% for item in found_items %}
+                            <div class="match-item-card" data-id="{{ item.f_i_id }}" data-type="found">
+                                {% if item.photo %}
+                                <img src="{{ url_for('get_found_image', item_id=item.f_i_id) }}" alt="{{ item.item_name }}">
+                                {% else %}
+                                <div class="no-image-small">📦</div>
+                                {% endif %}
+                                <div class="match-item-info">
+                                    <h4>{{ item.item_name }}</h4>
+                                    <p><strong>Category:</strong> {{ item.category }}</p>
+                                    <p><strong>Date:</strong> {{ item.found_date }}</p>
+                                    <p><strong>Location:</strong> {{ item.found_loc }}</p>
+                                    <p><strong>Reported by:</strong> {{ item.reporter_name }}</p>
+                                    <p class="description">{{ item.description[:100] }}...</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-state">No unclaimed found items</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- ========================================= -->
+            <!-- Automatic Suggestions Section -->
+            <!-- ========================================= -->
+            {% if suggestions %}
+            <div class="auto-match-section">
+                <h2>🤖 Suggested Matches (Automatic)</h2>
+                <p>The system found potential matches based on name similarity, category, and date proximity.</p>
+                <table class="suggestion-table">
+                    <thead>
+                        <tr>
+                            <th>Lost Item</th>
+                            <th>Found Item</th>
+                            <th>Category</th>
+                            <th>Location (Lost ↔ Found)</th>
+                            <th>Date Diff (days)</th>
+                            <th>Similarity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in suggestions %}
+                        <tr>
+                            <td>{{ s.lost_name }}</td>
+                            <td>{{ s.found_name }}</td>
+                            <td>{{ s.category }}</td>
+                            <td>{{ s.lost_loc }} ↔ {{ s.found_loc }}</td>
+                            <td>{{ s.date_diff }}</td>
+                            <td>{{ s.similarity }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="auto-match-section">
+                <h2>🤖 Suggested Matches</h2>
+                <p>No automatic matches found yet.</p>
+            </div>
+            {% endif %}
+
+
+            <div class="match-info">
+                <p>💡 <strong>Tip:</strong> This view helps you manually identify potential matches. 
+                When a student claims an item, the system will automatically use the MatchLostFound stored procedure.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

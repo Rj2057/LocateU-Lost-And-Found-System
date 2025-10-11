@@ -1,0 +1,149 @@
+<!-- ====================================
+FILE: frontend/templates/index.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocateU - Lost & Found System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="landing-page">
+    <div class="container">
+        <header class="main-header">
+            <h1>🔍 LocateU</h1>
+            <p class="subtitle">Lost and Found Management System</p>
+        </header>
+
+        <div class="auth-section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('student')">Student</button>
+                <button class="tab-btn" onclick="showTab('staff')">Staff</button>
+            </div>
+
+            <!-- STUDENT TAB -->
+            <div id="student-tab" class="tab-content active">
+                <div class="auth-forms">
+                    <div class="form-toggle">
+                        <button class="toggle-btn active" onclick="showForm('student-login')">Login</button>
+                        <button class="toggle-btn" onclick="showForm('student-register')">Register</button>
+                    </div>
+
+                    <!-- Student Login Form -->
+                    <form id="student-login-form" class="auth-form active" onsubmit="handleStudentLogin(event)">
+                        <h2>Student Login</h2>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="your.email@pesu.edu">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <div id="student-login-message" class="message"></div>
+                    </form>
+
+                    <!-- Student Register Form -->
+                    <form id="student-register-form" class="auth-form" onsubmit="handleStudentRegister(event)">
+                        <h2>Student Registration</h2>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="your.email@pesu.edu">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" required placeholder="9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" name="department" required placeholder="CSE / ECE / ME / ...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Year of Study</label>
+                            <select name="year" required>
+                                <option value="">Select Year</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                                <option value="5">5th Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="Create password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <div id="student-register-message" class="message"></div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- STAFF TAB -->
+            <div id="staff-tab" class="tab-content">
+                <div class="auth-forms">
+                    <div class="form-toggle">
+                        <button class="toggle-btn active" onclick="showForm('staff-login')">Login</button>
+                        <button class="toggle-btn" onclick="showForm('staff-register')">Register</button>
+                    </div>
+
+                    <!-- Staff Login Form -->
+                    <form id="staff-login-form" class="auth-form active" onsubmit="handleStaffLogin(event)">
+                        <h2>Staff Login</h2>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="staff.email@pesu.edu">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <div id="staff-login-message" class="message"></div>
+                    </form>
+
+                    <!-- Staff Register Form -->
+                    <form id="staff-register-form" class="auth-form" onsubmit="handleStaffRegister(event)">
+                        <h2>Staff Registration</h2>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" required placeholder="Dr. John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="staff.email@pesu.edu">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" required placeholder="9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" name="role" required placeholder="e.g., Admin, Security">
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" name="department" required placeholder="e.g., CSE, Admin">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="Create password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <div id="staff-register-message" class="message"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

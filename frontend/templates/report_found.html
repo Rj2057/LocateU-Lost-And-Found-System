@@ -1,0 +1,101 @@
+<!-- ====================================
+FILE: frontend/templates/report_found.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Found Item - LocateU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">🔍 LocateU</div>
+        <div class="nav-user">
+            <span>Welcome, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Menu</h3>
+            <ul class="menu-list">
+                <li><a href="{{ url_for('student_dashboard') }}">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('report_lost') }}">🔴 Report Lost Item</a></li>
+                <li><a href="{{ url_for('report_found') }}" class="active">🟢 Report Found Item</a></li>
+                <li><a href="{{ url_for('claim_item') }}">✋ Claim Item</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>🟢 Report Found Item</h1>
+                <p>Help someone find their lost item</p>
+            </div>
+
+            <div class="card form-card">
+                <form id="report-found-form" onsubmit="handleReportFound(event)" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Item Name *</label>
+                            <input type="text" name="item_name" required placeholder="e.g., Black Wallet">
+                        </div>
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Books">Books</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="ID Cards">ID Cards</option>
+                                <option value="Keys">Keys</option>
+                                <option value="Bags">Bags</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Found Date *</label>
+                            <input type="date" name="found_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Found Location *</label>
+                            <input type="text" name="found_loc" required placeholder="e.g., Library 2nd Floor">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea name="description" required rows="4" placeholder="Provide detailed description to help owner identify..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Photo (Optional)</label>
+                        <div class="file-upload">
+                            <input type="file" name="photo" id="photo-upload-found" accept="image/*" onchange="previewImage(event)">
+                            <label for="photo-upload-found" class="file-upload-label">
+                                <span>📷 Choose Photo</span>
+                            </label>
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                        <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                    <div id="form-message" class="message"></div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!-- ====================================
+FILE: frontend/templates/staff_dashboard.html
+==================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - LocateU</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">🔍 LocateU - Staff Portal</div>
+        <div class="nav-user">
+            <span>Welcome, {{ user_name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h3>Staff Menu</h3>
+            <ul class="menu-list">
+                <li><a href="{{ url_for('staff_dashboard') }}" class="active">📊 Dashboard</a></li>
+                <li><a href="{{ url_for('staff_claims') }}">📋 Review Claims</a></li>
+                <li><a href="{{ url_for('staff_match') }}">🔗 Match Items</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1>Staff Dashboard</h1>
+                <p>Manage lost and found items</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <h3>{{ stats.pending_claims }}</h3>
+                        <p>Pending Claims</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-lost">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-info">
+                        <h3>{{ stats.unresolved_lost }}</h3>
+                        <p>Unresolved Lost Items</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-found">
+                    <div class="stat-icon">🟢</div>
+                    <div class="stat-info">
+                        <h3>{{ stats.unclaimed_found }}</h3>
+                        <p>Unclaimed Found Items</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-match">
+                    <div class="stat-icon">🔗</div>
+                    <div class="stat-info">
+                        <h3>{{ stats.pending_matches }}</h3>
+                        <p>Pending Matches</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📢 Recent System Notifications</h2>
+                <div class="notification-list">
+                    {% if notifications %}
+                        {% for notif in notifications %}
+                        <div class="notification-item {{ 'unread' if notif.status == 'Unread' else '' }}">
+                            <p>{{ notif.message }}</p>
+                            <small>{{ notif.date }}</small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="empty-state">No notifications</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <a href="{{ url_for('staff_claims') }}" class="action-btn">
+                        <span class="action-icon">📋</span>
+                        <span>Review Claims</span>
+                    </a>
+                    <a href="{{ url_for('staff_match') }}" class="action-btn">
+                        <span class="action-icon">🔗</span>
+                        <span>Match Items</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
