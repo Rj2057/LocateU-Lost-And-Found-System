@@ -1,11 +1,4 @@
-// ====================================
-// FILE: frontend/static/js/main.js
-// ====================================
-
-// ====================================
 // TAB AND FORM SWITCHING
-// ====================================
-
 function showTab(tabName) {
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {

@@ -1,4 +1,4 @@
--- (Provided functions / procedures / triggers - included for reference)
+-- (Provided functions / procedures / triggers)
 USE LostAndFoundDB;
 DROP FUNCTION IF EXISTS CountLostItems;
 DELIMITER //
