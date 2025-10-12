@@ -324,6 +324,72 @@ async function verifyClaim(claimId, action) {
 }
 
 // ====================================
+// STAFF MANUAL MATCH (NEW)
+// ====================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const FOUND_ITEMS = window.FOUND_ITEMS || [];
+
+    function openModal() {
+        document.getElementById('matchModal').style.display = 'block';
+    }
+    function closeModal() {
+        document.getElementById('matchModal').style.display = 'none';
+    }
+
+    document.querySelectorAll('.btn-open-match').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const lostId = this.dataset.lostId;
+            const lostName = this.dataset.lostName || 'Selected lost item';
+            document.getElementById('modalTitle').textContent = 'Match Lost Item';
+            document.getElementById('modalLostName').textContent = `Lost: ${lostName} (ID ${lostId})`;
+
+            const sel = document.getElementById('foundSelect');
+            sel.innerHTML = '<option value="">-- choose found item --</option>';
+            FOUND_ITEMS.forEach(fi => {
+                if (fi.status && fi.status.toLowerCase() !== 'unclaimed') return;
+                const opt = document.createElement('option');
+                opt.value = fi.f_i_id;
+                opt.textContent = `${fi.item_name} — ${fi.found_loc} (${fi.found_date})`;
+                sel.appendChild(opt);
+            });
+            document.getElementById('confirmMatchBtn').dataset.lostId = lostId;
+            openModal();
+        });
+    });
+
+    document.getElementById('cancelMatch').addEventListener('click', e => {
+        e.preventDefault();
+        closeModal();
+    });
+
+    document.getElementById('confirmMatchBtn').addEventListener('click', async e => {
+        e.preventDefault();
+        const lostId = e.target.dataset.lostId;
+        const foundId = document.getElementById('foundSelect').value;
+        if (!foundId) return alert('Please choose a found item.');
+
+        try {
+            const resp = await fetch('/staff/confirm-match', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lost_item_id: lostId, found_item_id: foundId})
+            });
+            const data = await resp.json();
+            if (resp.ok && data.success) {
+                alert('✅ Match recorded successfully!');
+                location.reload();
+            } else alert(data.message || 'Failed to record match');
+        } catch (err) {
+            console.error(err);
+            alert('Server error.');
+        } finally {
+            closeModal();
+        }
+    });
+});
+
+// ====================================
 // IMAGE MODAL
 // ====================================
 
@@ -352,53 +418,40 @@ function showMessage(element, message, type) {
 }
 
 // ====================================
-// SET DEFAULT DATE TO TODAY
+// DEFAULT DATE SETUP & MODALS
 // ====================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Set max date to today for date inputs
     const dateInputs = document.querySelectorAll('input[type="date"]');
     const today = new Date().toISOString().split('T')[0];
-    
     dateInputs.forEach(input => {
         input.max = today;
-        if (!input.value) {
-            input.value = today;
-        }
+        if (!input.value) input.value = today;
     });
-    
-    // Close modal when clicking outside
+
     window.onclick = function(event) {
         const claimModal = document.getElementById('claim-modal');
         const imageModal = document.getElementById('image-modal');
-        
-        if (event.target === claimModal) {
-            closeClaimModal();
-        }
-        
-        if (event.target === imageModal) {
-            closeImageModal();
-        }
+        const matchModal = document.getElementById('matchModal');
+        if (event.target === claimModal) closeClaimModal();
+        if (event.target === imageModal) closeImageModal();
+        if (event.target === matchModal) matchModal.style.display = 'none';
     };
 });
 
 // ====================================
-// NOTIFICATIONS AUTO-REFRESH (Optional)
+// AUTO NOTIFICATION REFRESH
 // ====================================
 
 function refreshNotifications() {
     fetch('/api/notifications')
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            if (data.success && data.notifications) {
-                // Update notification badge or list
+            if (data.success && data.notifications)
                 console.log('Notifications refreshed');
-            }
         })
-        .catch(error => console.error('Error refreshing notifications:', error));
+        .catch(err => console.error('Notification refresh error:', err));
 }
 
-// Refresh notifications every 30 seconds (if on dashboard)
-if (window.location.pathname.includes('dashboard')) {
+if (window.location.pathname.includes('dashboard'))
     setInterval(refreshNotifications, 30000);
-}

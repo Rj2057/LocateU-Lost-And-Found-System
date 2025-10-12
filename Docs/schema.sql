@@ -70,5 +70,5 @@ CREATE TABLE notifications (
     notification_id INT PRIMARY KEY AUTO_INCREMENT,
     message TEXT NOT NULL,
     date DATE NOT NULL,
-    status VARCHAR(20) DEFAULT 'Unread'
+    status VARCHAR(20) DEFAULT 'Sent'
 );
