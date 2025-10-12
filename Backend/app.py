@@ -1,7 +1,3 @@
-# ====================================
-# FILE: backend/app.py
-# ====================================
-
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -18,9 +14,8 @@ app = Flask(__name__,
 app.secret_key = Config.APP_SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# ====================================
+
 # HELPER FUNCTIONS
-# ====================================
 
 def allowed_file(filename):
     """Check if file extension is allowed"""
@@ -35,9 +30,8 @@ def create_notification(message, notif_type="Info"):
     """
     execute_query(query, (message, notif_type))
 
-# ====================================
+
 # HOME & AUTH ROUTES
-# ====================================
 
 @app.route('/')
 def index():
@@ -136,9 +130,8 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-# ====================================
+
 # STUDENT DASHBOARD ROUTES
-# ====================================
 
 @app.route('/student/dashboard')
 def student_dashboard():
@@ -247,7 +240,7 @@ def report_found():
         result = execute_query(query, (session['user_id'], category, item_name, 
                                       description, found_date, found_loc))
         
-        # If result is an inserted id (depends on your execute_query implementation),
+
         # store photo against that id.
         if result and 'photo' in request.files:
             photo = request.files['photo']
@@ -389,9 +382,7 @@ def claim_item():
 
 
 
-# ====================================
 # STAFF DASHBOARD ROUTES
-# ====================================
 
 @app.route('/staff/dashboard')
 def staff_dashboard():
@@ -422,7 +413,7 @@ def staff_claims():
     if 'user_id' not in session or session.get('user_type') != 'staff':
         return redirect(url_for('index'))
     
-    # NOTE: claims table has no claim_date column in schema; use match_date for display instead.
+
     query = """
         SELECT 
             c.claim_id,
@@ -472,12 +463,12 @@ def verify_claim(claim_id, action):
         WHERE c.claim_id = %s
     """, (claim_id,), fetch=True, fetchone=True)
     
-    # Update claim row; this sets verified_by_staff_id so your trigger after_claim_update_notify will insert a notification
+
     execute_query("UPDATE claims SET approval_status = %s, verified_by_staff_id = %s WHERE claim_id = %s",
                   (new_status, session['user_id'], claim_id))
 
     if new_status == 'Approved':
-        # Update match_items, lost_items, found_items so the DB reflects the approved claim
+
         execute_query("""
             UPDATE match_items m
             JOIN claims c ON c.match_id = m.match_id
@@ -517,7 +508,7 @@ def staff_match():
     if 'user_id' not in session or session.get('user_type') != 'staff':
         return redirect(url_for('index'))
 
-    # ---- Fetch unresolved lost items ----
+    # Fetch unresolved lost items
     lost_query = """
         SELECT li.lost_item_id, li.item_name, li.category, li.description,
                li.lost_date, li.lost_loc, li.status, li.photo,
@@ -529,7 +520,7 @@ def staff_match():
     """
     lost_items = execute_query(lost_query, fetch=True) or []
 
-    # ---- Fetch unclaimed found items ----
+    # Fetch unclaimed found items
     found_query = """
         SELECT f.f_i_id, f.item_name, f.category, f.description,
                f.found_date, f.found_loc, f.status, f.photo,
@@ -542,7 +533,7 @@ def staff_match():
     """
     found_items = execute_query(found_query, fetch=True) or []
 
-    # ---- Fetch existing matches ----
+    # Fetch existing matches
     match_query = """
         SELECT m.match_id,
                DATE_FORMAT(m.match_date, '%Y-%m-%d') AS match_date,
@@ -556,7 +547,7 @@ def staff_match():
     """
     matches = execute_query(match_query, fetch=True) or []
 
-    # ---- Auto-match suggestion logic ----
+    # Auto-match suggestion logic
     def similarity(a, b):
         return SequenceMatcher(None, a.lower().strip(), b.lower().strip()).ratio()
 
@@ -614,7 +605,7 @@ def staff_match():
     # Sort suggestions by best similarity first
     suggestions.sort(key=lambda x: x["similarity"], reverse=True)
 
-    # ---- Clean binary data from found_items before JSON serialization ----
+    # Clean binary data from found_items before JSON serialization
     found_items_json = []
     for item in found_items:
         item_dict = dict(item)
@@ -624,13 +615,13 @@ def staff_match():
         item_dict.pop('photo', None)
         found_items_json.append(item_dict)
 
-    # ---- Render ----
+    #  Render 
     return render_template(
         "staff_match.html",
         user_name=session["user_name"],
         lost_items=lost_items,
-        found_items=found_items,  # Keep original for HTML image rendering
-        found_items_json=found_items_json,  # Cleaned version for JavaScript
+        found_items=found_items,
+        found_items_json=found_items_json,
         matches=matches,
         suggestions=suggestions
     )
@@ -666,7 +657,7 @@ def confirm_match():
     if not lost_row or not found_row:
         return jsonify({'success': False, 'message': 'Item(s) not found'}), 404
 
-    # Optional: prevent matching already matched/resolved items
+
     if lost_row.get('status') not in ['Unresolved', 'Matched']:
         return jsonify({'success': False, 'message': 'Lost item not available for matching'}), 409
     if found_row.get('status') not in ['Unclaimed', 'Matched']:
@@ -688,8 +679,6 @@ def confirm_match():
         """, (lost_item_id, found_item_id), fetch=True, fetchone=True)
         match_id = match_row['match_id'] if match_row else None
 
-        # DON'T update item statuses yet - keep them Unresolved/Unclaimed
-        # so student can still claim them. Statuses will update when claim is approved.
         
         # Get student email for targeted notification
         student_info = execute_query(
@@ -716,9 +705,7 @@ def confirm_match():
         return jsonify({'success': False, 'message': f'Error creating match: {e}'}), 500
     
 
-# ====================================
 # IMAGE SERVING ROUTES
-# ====================================
 
 @app.route('/image/lost/<int:item_id>')
 def get_lost_image(item_id):
@@ -747,15 +734,13 @@ def get_claim_proof(claim_id):
     result = execute_query(query, (claim_id,), fetch=True, fetchone=True)
     
     if result and result.get('proof_file'):
-        # Some drivers return bytes, some return memoryview; wrap with BytesIO
+
         return send_file(io.BytesIO(result['proof_file']), mimetype='image/jpeg')
-    # Return 204 No Content (or 404) so front-end can show placeholder
+
     return '', 404
 
 
-# ====================================
 # API ROUTES FOR AJAX
-# ====================================
 
 @app.route('/api/notifications')
 def get_notifications():
@@ -799,9 +784,7 @@ def mark_notification_read(notif_id):
     execute_query(query, (notif_id,))
     return jsonify({'success': True})
 
-# ====================================
-# RUN APPLICATION
-# ====================================
 
+# RUN APPLICATION
 if __name__ == '__main__':
     app.run(debug=Config.APP_DEBUG, host='0.0.0.0', port=5000)
