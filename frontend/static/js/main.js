@@ -1,16 +1,15 @@
-// TAB AND FORM SWITCHING
 function showTab(tabName) {
-    // Hide all tabs
+    
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
     
-    // Remove active class from all buttons
+    
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Show selected tab
+    
     document.getElementById(tabName + '-tab').classList.add('active');
     event.target.classList.add('active');
 }
@@ -18,24 +17,21 @@ function showTab(tabName) {
 function showForm(formType) {
     const container = event.target.closest('.auth-forms');
     
-    // Hide all forms
+    
     container.querySelectorAll('.auth-form').forEach(form => {
         form.classList.remove('active');
     });
     
-    // Remove active class from all toggle buttons
+    
     container.querySelectorAll('.toggle-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Show selected form
+    
     document.getElementById(formType + '-form').classList.add('active');
     event.target.classList.add('active');
 }
 
-// ====================================
-// AUTHENTICATION HANDLERS
-// ====================================
 
 async function handleStudentRegister(event) {
     event.preventDefault();
@@ -147,9 +143,6 @@ async function handleStaffLogin(event) {
     }
 }
 
-// ====================================
-// REPORT ITEM HANDLERS
-// ====================================
 
 async function handleReportLost(event) {
     event.preventDefault();
@@ -211,9 +204,6 @@ async function handleReportFound(event) {
     }
 }
 
-// ====================================
-// IMAGE PREVIEW
-// ====================================
 
 function previewImage(event) {
     const file = event.target.files[0];
@@ -245,9 +235,6 @@ function previewProofImage(event) {
     }
 }
 
-// ====================================
-// CLAIM ITEM HANDLERS
-// ====================================
 
 function openClaimModal(foundId, itemName) {
     document.getElementById('claim-found-id').value = foundId;
@@ -289,9 +276,6 @@ async function handleClaim(event) {
     }
 }
 
-// ====================================
-// STAFF CLAIM VERIFICATION
-// ====================================
 
 async function verifyClaim(claimId, action) {
     const confirmed = confirm(`Are you sure you want to ${action} this claim?`);
@@ -316,9 +300,6 @@ async function verifyClaim(claimId, action) {
     }
 }
 
-// ====================================
-// STAFF MANUAL MATCH (NEW)
-// ====================================
 
 document.addEventListener('DOMContentLoaded', function() {
     const FOUND_ITEMS = window.FOUND_ITEMS || [];
@@ -382,9 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// ====================================
-// IMAGE MODAL
-// ====================================
 
 function openImageModal(src) {
     const modal = document.getElementById('image-modal');
@@ -397,9 +375,6 @@ function closeImageModal() {
     document.getElementById('image-modal').style.display = 'none';
 }
 
-// ====================================
-// UTILITY FUNCTIONS
-// ====================================
 
 function showMessage(element, message, type) {
     element.textContent = message;
@@ -410,9 +385,6 @@ function showMessage(element, message, type) {
     }, 5000);
 }
 
-// ====================================
-// DEFAULT DATE SETUP & MODALS
-// ====================================
 
 document.addEventListener('DOMContentLoaded', function() {
     const dateInputs = document.querySelectorAll('input[type="date"]');
@@ -432,9 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-// ====================================
-// AUTO NOTIFICATION REFRESH
-// ====================================
 
 function refreshNotifications() {
     fetch('/api/notifications')
