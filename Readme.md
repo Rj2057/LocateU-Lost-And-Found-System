@@ -106,6 +106,19 @@ Docs/
 **Institution:** PES University  
 **Course:** UE23CS351A - DBMS Mini Project  
 
+
+<img width="1920" height="1547" alt="screencapture-127-0-0-1-5000-student-dashboard-2025-11-08-18_41_29" src="https://github.com/user-attachments/assets/bcc8a3d6-d7f8-45d4-8ec8-e30eb6f3b9c4" />
+
+<img width="1002" height="536" alt="image" src="https://github.com/user-attachments/assets/9b4bbe64-daf4-4cad-93ab-ad539651febf" />
+
+<img width="1920" height="1549" alt="screencapture-127-0-0-1-5000-staff-dashboard-2025-11-08-18_44_03" src="https://github.com/user-attachments/assets/aeb9048e-1721-4c86-ad88-e476c8b78612" />
+
+<img width="1920" height="4170" alt="screencapture-127-0-0-1-5000-staff-claims-2025-11-08-18_44_22" src="https://github.com/user-attachments/assets/159b0d2a-0cf0-42cb-a7f7-b93b7aec48c8" />
+
+
+
+
+
 ---
 
 ## 🚫 License
