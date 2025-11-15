@@ -36,7 +36,7 @@ LocateU is a **Flask + MySQL web application** designed to simplify the process 
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Pratheek22/LocateU-Lost-And-Found-System.git
 cd LocateU-Lost-And-Found-System-main
 ```
 
@@ -101,8 +101,8 @@ Docs/
 
 ---
 
-## 👨‍💻 Author
-**Developed by:** Pratheek J Gowda  
+## 👨‍💻 Authors
+**Developed by:** Pratheek J Gowda  , Rajat Ramakrishna Bhat
 **Institution:** PES University  
 **Course:** UE23CS351A - DBMS Mini Project  
 
